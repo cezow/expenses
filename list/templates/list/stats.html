@@ -1,0 +1,85 @@
+{% extends 'list/main.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-center">
+
+  <h2 class="d-inline-flex p-3 text-center text-secondary shadow-sm rounded-circle border-top border-white">Statistics
+  </h2><br>
+</div>
+
+<div class="container-fluid">
+  <div class="row bg-white shadow p-3 rounded">
+    <div class="col-8">
+      <canvas id="myChart"></canvas>
+    </div>
+    <div class="col-4">
+      {% if message %}
+      <p>
+      <h5 class="text-danger">{{ message }}</h5>
+      </p>
+      {% else %}
+      <p>
+      <h5>Total: {{total_price}}€</h5>
+      </p>
+      {% endif %}
+      <form action="{% url 'stats' %}" method="post">
+        {% csrf_token %}
+        <input type="date" name="first_date" value="{{ first }}" required="required" class="m-1"> -
+        <input type="date" name="last_date" value="{{ last }}" required="required" class="m-1">
+        <input type="submit" value="Submit dates" class="btn btn-outline-primary btn-sm rounded-pill m-1">
+        <p>
+          {% if message %}
+          {% else %}
+        </p>
+        <div class="d-flex flex-column">
+          <div class="p-2">Days with expenses: <h5>{{ daysWith }} / {{ days_range }}</h5></div>
+          <div class="p-2">The highest expense: <br> · <b>{{ highest_expense }}</b></div>
+          <div class="p-2"> The highest expenses by budgets: <br>
+            {% for element in prod_list %}
+              · <b>{{element}}</b> <br>
+            {% endfor %}
+          </div>
+          <div class="p-2"> The highest expense without a budget: <br>
+              · <b>{{highest_prod_none}}</b>
+          </div>
+        </div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const data = {
+    labels: {{ labels| safe}},
+    datasets: {{ chart_data | safe }}
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: 'AMOUNTS OF BUDGETS EXPENSES PER DAY'
+        },
+      },
+      responsive: true,
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          stacked: true
+        }
+      }
+    }
+  };
+
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+</script>
+{% endblock %}

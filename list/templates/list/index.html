@@ -1,0 +1,57 @@
+{% extends 'list/main.html' %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <h2 class="d-inline-flex p-3 text-center text-secondary shadow-sm rounded-circle border-top border-white">Daily List
+    </h2><br>
+</div>
+<div class="bg-white shadow rounded p-3">
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        <input type="date" name="input_date" value="{{ date }}" required="required">
+        <input type="submit" value="Submit date" class="btn btn-outline-primary btn-sm rounded-pill mx-1">
+    </form>
+    </p>
+    {% if products %}
+    <p>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total price</th>
+                <th>Budget</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}€</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.total }}€</td>
+                <td>{{ product.budget }}</td>
+                <td><a href="{% url 'edit' product.id %}" class="btn btn-outline-success btn-sm">EDIT</a></td>
+                <td><a href="{% url 'delete' product.id %}" class="btn btn-outline-danger btn-sm">DEL</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p>
+        <h5 class="text-center">Total: {{total_price}}€</h5>
+    </p>
+
+    {% else %}
+    <p>
+        <h5>No expenses on this day.</h5>
+    </p>
+    {% endif %}
+
+    <p> 
+        <a href="{% url 'add' %}"><button class="btn btn-outline-primary rounded-pill">Add a new expense</button></a>
+    </p>
+</div>
+{% endblock %}

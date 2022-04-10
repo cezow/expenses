@@ -1,0 +1,16 @@
+{% extends 'list/main.html' %}
+{% block content %}
+<div class="d-flex flex-column text-center mt-5">
+    <p>
+        <h1>Editing the budget</h1>
+    </p>
+    <p>
+        <form action="{% url 'editBudget' budget.id %}" method="post">
+            {% csrf_token %}
+            {{form}}
+            <input type="submit" value="CONFIRM" class="btn btn-outline-success btn-sm">
+            <a href="{% url 'budget' %}" class="btn btn-outline-dark btn-sm">CANCEL</a>
+        </form>
+    </p>
+</div>
+{% endblock %}

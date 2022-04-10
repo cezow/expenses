@@ -1,0 +1,15 @@
+{% extends 'list/main.html' %}
+{% block content %}
+<div class="text-center mt-5">
+<p>
+<h1>Delete budget: {{budget.name}}?</h1>
+</p>
+<p>
+<form action="{% url 'deleteBudget' budget.id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="DELETE" class="btn btn-outline-danger">
+    <a href="{% url 'budget' %}" class="btn btn-outline-dark">CANCEL</a>
+</form>
+</p>
+</div>
+{% endblock %}

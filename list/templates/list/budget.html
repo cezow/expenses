@@ -1,0 +1,47 @@
+{% extends 'list/main.html' %}
+{% block content %}
+
+<div class="d-flex justify-content-center">
+    <h2 class="d-inline-flex p-3 text-center text-secondary shadow-sm rounded-circle border-top border-white">Budgets
+    </h2><br>
+</div>
+<div class="bg-white shadow rounded p-3">
+    </p>
+    {% if budgets %}
+    <p>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Current Value</th>
+                <th><a href="{% url 'infoNoneBudget'%}" style="color: black;">Bought</a></th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for budget in budgets %}
+            <tr>
+                <td>{{ budget.name }}</td>
+                <td>{{ budget.value }}€</td>
+                <td><a href="{% url 'infoBudget' budget.id %}" class="btn btn-outline-info btn-sm">INFO</a></td>
+                <td><a href="{% url 'editBudget' budget.id %}" class="btn btn-outline-success btn-sm">EDIT</a></td>
+                <td><a href="{% url 'deleteBudget' budget.id %}" class="btn btn-outline-danger btn-sm">DEL</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    {% else %}
+    <p>
+        <h5>No any budgets.</h5>
+    </p>
+    {% endif %}
+
+    <p> 
+        <a href="{% url 'addBudget' %}"><button class="btn btn-outline-primary rounded-pill">Add a new budget</button></a>
+    </p>
+</div>
+{{ jeden }}
+{% endblock %}
