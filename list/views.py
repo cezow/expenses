@@ -127,14 +127,6 @@ def stats(request):
             first_product_date = first_product.buyDate.strftime('%Y-%m-%d')
             last_product_date = last_product.buyDate.strftime('%Y-%m-%d')
 
-            products = Product.objects.filter(buyDate__range=[first_product_date, last_product_date])
-            labels_of_date = list(set([label.buyDate.strftime('%Y-%m-%d') for label in products]))
-            labels_of_date.sort()
-
-            total_price = 0
-            for product in products:
-                total_price += product.total()
-
 
             if request.method == 'POST':
                 first_date = request.POST.get('first_date')
@@ -147,7 +139,15 @@ def stats(request):
                         'message': 'Invalid dates, please try again.'
                     })
 
+            products = Product.objects.filter(buyDate__range=[first_product_date, last_product_date])
+            labels_of_date = list(set([label.buyDate.strftime('%Y-%m-%d') for label in products]))
+            labels_of_date.sort()
+
             
+            total_price = 0
+            for product in products:
+                total_price += product.total()
+
             first = pd.to_datetime(first_product_date, format="%Y-%m-%d")
             last = pd.to_datetime(last_product_date, format="%Y-%m-%d")
             days_range = last - first
@@ -174,12 +174,11 @@ def stats(request):
 
             # Highest expenses by budgets function
             def highest_expense_budget():
-                pros = Product.objects.filter(buyDate__range=[first_product_date, last_product_date])
-                budgets_ids = [b.budget.id for b in pros if b.budget != None]
+                budgets_ids = [b.budget.id for b in products if b.budget != None]
                 budgets_set = set(budgets_ids)
                 prod_list= []
                 for budget_id in budgets_set:
-                    element = Product.objects.filter(budget__id=budget_id).order_by('price')[0]
+                    element = Product.objects.filter(buyDate__range=[first_product_date, last_product_date]).filter(budget__id=budget_id).order_by('-price')[0]
                     prod_list.append(f"{element.budget}: {element.quantity}x {element.name.upper()} for {element.total()}€ on {element.buyDate}")
                 if len(prod_list) == 0:
                     prod_list.append("No expenses with a budget yet")
